@@ -68,7 +68,7 @@ class Client {
         .wdPropfind(this, path, true, fileXmlStr, cancelToken: cancelToken);
 
     String str = resp.data;
-    return WebdavXml.toFiles(path, str);
+    return WebdavXml.toFiles(path, str, skipSelf: false);
   }
 
   /// Read a single files properties
