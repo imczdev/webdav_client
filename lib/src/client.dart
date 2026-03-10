@@ -167,7 +167,7 @@ class Client {
 
   /// Read the stream of a file
   /// It is best not to open debug mode, otherwise the byte data is too large and the output results in IDE cards, 😄
-  Future<dynamic> read2Stream(String path,
+  Stream<List<int>> read2Stream(String path,
       {void Function(int count, int total)? onProgress,
       CancelToken? cancelToken,
       int? start,
