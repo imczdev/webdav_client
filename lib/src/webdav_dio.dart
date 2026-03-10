@@ -281,14 +281,14 @@ class WdDio with DioMixin implements Dio {
     return resp.data;
   }
 
-  Future<List<int>> wdReadWithStreamAndRange(
+  Stream<List<int>> wdReadWithStreamAndRange(
     Client self,
     String path, {
     void Function(int count, int total)? onProgress,
     CancelToken? cancelToken,
     int? start,
     int? end,
-  }) async {
+  }) async* {
     // fix auth error
     var pResp = await this.wdOptions(self, path, cancelToken: cancelToken);
     if (pResp.statusCode != 200) {
@@ -309,7 +309,7 @@ class WdDio with DioMixin implements Dio {
     if (resp.statusCode != 206) {
       if (resp.statusCode != null) {
         if (resp.statusCode! >= 300 && resp.statusCode! < 400) {
-          return (await this.req(
+          yield* (await this.req(
             self,
             'GET',
             resp.headers["location"]!.first,
@@ -320,12 +320,13 @@ class WdDio with DioMixin implements Dio {
             onReceiveProgress: onProgress,
             cancelToken: cancelToken,
           ))
-              .data;
+              .data
+              .stream;
         }
       }
       throw newResponseError(resp);
     }
-    return resp.data;
+    yield* resp.data.stream;
   }
 
   /// read a file with stream
