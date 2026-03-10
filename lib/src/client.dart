@@ -165,6 +165,20 @@ class Client {
         );
   }
 
+  /// Read the stream of a file
+  /// It is best not to open debug mode, otherwise the byte data is too large and the output results in IDE cards, 😄
+  Future<dynamic> read2Stream(String path,
+      {void Function(int count, int total)? onProgress,
+      CancelToken? cancelToken,
+      int? start,
+      int? end}) {
+    return this.c.wdReadWithStreamAndRange(this, path,
+        onProgress: onProgress,
+        cancelToken: cancelToken,
+        start: start,
+        end: end);
+  }
+
   /// Read the bytes of a file with stream and write to a local file
   Future<void> read2File(
     String path,

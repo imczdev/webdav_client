@@ -281,6 +281,53 @@ class WdDio with DioMixin implements Dio {
     return resp.data;
   }
 
+  Future<List<int>> wdReadWithStreamAndRange(
+    Client self,
+    String path, {
+    void Function(int count, int total)? onProgress,
+    CancelToken? cancelToken,
+    int? start,
+    int? end,
+  }) async {
+    // fix auth error
+    var pResp = await this.wdOptions(self, path, cancelToken: cancelToken);
+    if (pResp.statusCode != 200) {
+      throw newResponseError(pResp);
+    }
+
+    var resp = await this.req(
+      self,
+      'GET',
+      path,
+      optionsHandler: (options) {
+        options.responseType = ResponseType.stream;
+        options.headers = {"Range": "bytes=$start-$end"};
+      },
+      onReceiveProgress: onProgress,
+      cancelToken: cancelToken,
+    );
+    if (resp.statusCode != 200) {
+      if (resp.statusCode != null) {
+        if (resp.statusCode! >= 300 && resp.statusCode! < 400) {
+          return (await this.req(
+            self,
+            'GET',
+            resp.headers["location"]!.first,
+            optionsHandler: (options) {
+              options.responseType = ResponseType.stream;
+              options.headers = {"Range": "bytes=$start-$end"};
+            },
+            onReceiveProgress: onProgress,
+            cancelToken: cancelToken,
+          ))
+              .data;
+        }
+      }
+      throw newResponseError(resp);
+    }
+    return resp.data;
+  }
+
   /// read a file with stream
   Future<void> wdReadWithStream(
     Client self,
