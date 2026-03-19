@@ -180,6 +180,7 @@ class WdDio with DioMixin implements Dio {
       {CancelToken? cancelToken}) async {
     var resp = await this.req(self, 'PROPFIND', path, data: dataStr,
         optionsHandler: (options) {
+      options.contentType = 'application/xml; charset=UTF-8';
       options.headers?['depth'] = depth ? '1' : '0';
       options.headers?['content-type'] = 'application/xml;charset=UTF-8';
       options.headers?['accept'] = 'application/xml,text/xml';

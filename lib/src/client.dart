@@ -76,7 +76,7 @@ class Client {
     path = fixSlashes(path);
     var resp = await this
         .c
-        .wdPropfind(this, path, true, fileXmlStr, cancelToken: cancelToken);
+        .wdPropfind(this, path, false, fileXmlStr, cancelToken: cancelToken);
 
     String str = resp.data;
     return WebdavXml.toFiles(path, str, skipSelf: false).first;
