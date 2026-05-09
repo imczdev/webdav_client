@@ -68,7 +68,7 @@ class Client {
         .wdPropfind(this, path, true, fileXmlStr, cancelToken: cancelToken);
 
     String str = resp.data;
-    return WebdavXml.toFiles(path, str, skipSelf: false);
+    return WebdavXml.toFiles(path, str);
   }
 
   /// Read a single files properties
@@ -79,7 +79,7 @@ class Client {
         .wdPropfind(this, path, false, fileXmlStr, cancelToken: cancelToken);
 
     String str = resp.data;
-    return WebdavXml.toFiles(path, str, skipSelf: false).first;
+    return WebdavXml.toFiles(path, str).first;
   }
 
   /// Create a folder
